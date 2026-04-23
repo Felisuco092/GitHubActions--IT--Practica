@@ -1,0 +1,44 @@
+name: reports.yml
+on:
+  workflow_run:
+    workflows: ["Java CI"]
+    types: [completed]
+    branches: [main]
+jobs:
+  generate-badge:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: target/
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+      - name: Commit JaCoCo Badge
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit-message: Update JaCoCo coverage badge
+          files: |
+            .github/badges/jacoco.svg
+            .github/badges/branches.svg
+  test-report:
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: target/
+      - name: Convert to CTRF
+        run: npx junit-to-ctrf target/surefire-reports/*.xml target/failsafe-reports/*.xml
+      - name: Publish CTRF Report
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          ctrf-report: ctrf/ctrf-report.json

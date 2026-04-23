@@ -2,6 +2,8 @@
 
 > ⚠️ Replace `Felisuco092` and `GitHubActions--IT--Practica` with your actual GitHub account details.
 
+![Java CI](https://github.com/Felisuco092/GitHubActions--IT--Practica/actions/workflows/main.yml/badge.svg)
+
 A Spring Boot REST API that models a small medical records system. Built as a practice project for the **Software Maintenance and Testing** course at the University of Málaga.
 
 ---

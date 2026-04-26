@@ -79,7 +79,7 @@ public class PacienteControllerMockMvcIT extends AbstractIntegration {
         crearPaciente(paciente);
 
         //Obtener paciente por ID
-        
+        getPacienteById(paciente.getId(), paciente);
     }
 
 }

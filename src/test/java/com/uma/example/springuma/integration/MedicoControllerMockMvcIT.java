@@ -66,4 +66,33 @@ public class MedicoControllerMockMvcIT extends AbstractIntegration {
 
     }
 
+    @Test
+    @DisplayName("Error cuando intentas borrar un medico que no existe")
+    void whenMedicIsNotFoundThenItShouldBeReturned() throws Exception {
+        this.mockMvc.perform(delete("/medico/4566"))
+                .andExpect(status().isInternalServerError());
+    }
+
+
+    @Test
+    @DisplayName("Actualizar medico lo actualiza de manera correcta")
+    void whenMedicIsUpdatedThenItShouldBeReturned() throws Exception {
+        crearMedico(medico);
+        Medico medico2 = new Medico();
+        medico2.setId(medico.getId());
+        medico2.setDni(new String(medico.getDni()));
+        medico2.setNombre("Laura");
+        medico2.setEspecialidad("Ginecologia");
+
+        this.mockMvc.perform(put("/medico")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(medico2)))
+                .andExpect(status().isNoContent());
+
+        this.mockMvc.perform(get("/medico/" + medico.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombre").value(medico2.getNombre()));
+
+    }
+
 }

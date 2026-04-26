@@ -90,4 +90,22 @@ public class ImagenControllerWebTestClientIT extends AbstractIntegration {
         }
     }
 
+    @Test
+    @DisplayName("Subir imagen de paciente de forma correcta")
+    public void subirImagenDeFormaCorrecta() throws Exception {
+        subirImagen("healthy.png");
+        testClient.get().uri("/imagen/paciente/" + paciente.getId())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    @DisplayName("Resuelve prediccion de una paciente")
+    public void resuelvePrediccionDeUnaPaciente() throws Exception {
+        subirImagen("healthy.png");
+        testClient.get().uri("/imagen/paciente/" + paciente.getId())
+                .exchange()
+                .expectStatus().isOk();
+    }
+
    }

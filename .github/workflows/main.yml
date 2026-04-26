@@ -31,10 +31,35 @@ jobs:
         run: ./mvnw verify --no-transfer-progress
 
       - name: Upload test results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            target/surefire-reports/*.xml
-            target/failsafe-reports/*.xml
-            target/site/jacoco/jacoco.csv
+          path: target/site/jacoco/jacoco.csv
+
+  report:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Test Results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: target/site/jacoco/
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+      - name: Commit JaCoCo Badge
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit-message: "Update JaCoCo coverage badge [skip ci]"
+          files: |
+            .github/badges/jacoco.svg
+            .github/badges/branches.svg

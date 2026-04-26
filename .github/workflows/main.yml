@@ -44,7 +44,7 @@ jobs:
         if: success() || failure()
         with:
           name: Tests Report
-          path: '/target/*-reports/TEST-*.xml'
+          path: 'target/failsafe-reports/TEST-*.xml'
           reporter: java-junit
 
 
